@@ -12,4 +12,12 @@ export class StraightBond {
    * @param base2 Base 2 connected by the bond.
    */
   constructor(private line: SVG.Line, readonly base1: Nucleobase, readonly base2: Nucleobase) {}
+
+  /**
+   * The actual DOM node that is the straight bond
+   * (i.e., the DOM node of its line element).
+   */
+  get domNode() {
+    return this.line.node;
+  }
 }
