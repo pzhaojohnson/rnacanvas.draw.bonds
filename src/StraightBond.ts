@@ -40,4 +40,11 @@ export class StraightBond {
   assignUUID(): void {
     assignUUID(this.line);
   }
+
+  /**
+   * The length of the line element that is the straight bond.
+   */
+  getTotalLength(): number {
+    return this.domNode.getTotalLength();
+  }
 }

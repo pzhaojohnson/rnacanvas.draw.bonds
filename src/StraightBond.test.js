@@ -6,6 +6,12 @@ import { StraightBond } from './StraightBond';
 
 import * as SVG from '@svgdotjs/svg.js';
 
+class LineMock {
+  node = {
+    getTotalLength: () => 0,
+  };
+}
+
 class NucleobaseMock {
   centerPoint = { x: 0, y: 0 };
 }
@@ -47,5 +53,13 @@ describe('StraightBond class', () => {
 
     sb.assignUUID();
     expect(sb.id.length).toBeGreaterThanOrEqual(36);
+  });
+
+  test('getTotalLength method', () => {
+    let line = new LineMock();
+    line.node.getTotalLength = () => 18.0273994;
+
+    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+    expect(sb.getTotalLength()).toBe(18.0273994);
   });
 });
