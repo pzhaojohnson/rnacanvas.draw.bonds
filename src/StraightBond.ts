@@ -20,4 +20,13 @@ export class StraightBond {
   get domNode() {
     return this.line.node;
   }
+
+  /**
+   * The `id` attribute of the line element that is the straight bond.
+   */
+  get id() {
+    // don't use the `id` method provided by the SVG.js library
+    // (since it will auto-initialize the `id` attribute of an element)
+    return this.domNode.getAttribute('id');
+  }
 }
