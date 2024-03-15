@@ -40,4 +40,12 @@ describe('StraightBond class', () => {
       expect(line.node.getAttribute('id')).toBe(null);
     });
   });
+
+  test('assignUUID method', () => {
+    let sb = new StraightBond(new SVG.Line(), new NucleobaseMock(), new NucleobaseMock());
+    expect(sb.id).toBe(null);
+
+    sb.assignUUID();
+    expect(sb.id.length).toBeGreaterThanOrEqual(36);
+  });
 });

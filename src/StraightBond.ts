@@ -2,6 +2,8 @@ import * as SVG from '@svgdotjs/svg.js';
 
 import type { Nucleobase } from './Nucleobase';
 
+import { assignUUID } from '@rnacanvas/draw.svg';
+
 /**
  * A bond that is a straight line between two bases.
  */
@@ -28,5 +30,14 @@ export class StraightBond {
     // don't use the `id` method provided by the SVG.js library
     // (since it will auto-initialize the `id` attribute of an element)
     return this.domNode.getAttribute('id');
+  }
+
+  /**
+   * Assigns a new UUID to the straight bond.
+   *
+   * (Overwrites any preexisting ID that the straight bond had.)
+   */
+  assignUUID(): void {
+    assignUUID(this.line);
   }
 }
