@@ -4,6 +4,8 @@ import type { Nucleobase } from './Nucleobase';
 
 import { assignUUID } from '@rnacanvas/draw.svg';
 
+import { distance } from '@rnacanvas/points';
+
 /**
  * A two-dimensional point.
  */
@@ -16,12 +18,16 @@ export type Point = {
  * A bond that is a straight line between two bases.
  */
 export class StraightBond<B extends Nucleobase> {
+  private cachedBasePadding1: number;
+
   /**
    * @param line The line element that is the straight bond.
    * @param base1 Base 1 connected by the bond.
    * @param base2 Base 2 connected by the bond.
    */
-  constructor(private line: SVGLineElement, readonly base1: B, readonly base2: B) {}
+  constructor(private line: SVGLineElement, readonly base1: B, readonly base2: B) {
+    this.cachedBasePadding1 = distance(this.point1, this.base1.centerPoint);
+  }
 
   /**
    * The actual DOM node of the line element that is the straight bond.
@@ -81,5 +87,16 @@ export class StraightBond<B extends Nucleobase> {
    */
   get point2(): Point {
     return this.domNode.getPointAtLength(this.getTotalLength());
+  }
+
+  /**
+   * The distance that point 1 is meant to be from base 1 of the straight bond.
+   *
+   * Note that this is not the same thing as the current distance between point 1 and base 1 of the straight bond.
+   *
+   * (This is to allow for proper repositioning of the straight bond after its bases have been moved.)
+   */
+  get basePadding1(): number {
+    return this.cachedBasePadding1;
   }
 }

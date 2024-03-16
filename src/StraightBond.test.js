@@ -6,14 +6,13 @@ import { StraightBond } from './StraightBond';
 
 import * as SVG from '@svgdotjs/svg.js';
 
-class LineMock {
-  getAttribute = () => {};
-  setAttribute = () => {};
+function createSVGLineElement() {
+  let line = (new SVG.Line()).node;
 
-  id = '';
+  line.getTotalLength = () => 0;
+  line.getPointAtLength = () => ({ x: 0, y: 0 });
 
-  getTotalLength = () => 0;
-  getPointAtLength = () => ({ x: 0, y: 0 });
+  return line;
 }
 
 class NucleobaseMock {
@@ -22,7 +21,7 @@ class NucleobaseMock {
 
 describe('StraightBond class', () => {
   test('domNode getter', () => {
-    let line = (new SVG.Line()).node;
+    let line = createSVGLineElement();
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
 
@@ -31,7 +30,8 @@ describe('StraightBond class', () => {
   });
 
   test('getAttribute method', () => {
-    let line = (new SVG.Line()).node;
+    let line = createSVGLineElement();
+
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
 
     line.setAttribute('stroke', '#5567ab');
@@ -42,7 +42,8 @@ describe('StraightBond class', () => {
   });
 
   test('setAttribute method', () => {
-    let line = (new SVG.Line()).node;
+    let line = createSVGLineElement();
+
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
 
     sb.setAttribute('stroke', '#72bf89');
@@ -54,7 +55,8 @@ describe('StraightBond class', () => {
 
   describe('id getter', () => {
     it('returns the ID of the line element that is the straight bond', () => {
-      let line = (new SVG.Line()).node;
+      let line = createSVGLineElement();
+
       line.setAttribute('id', 'line-38147827491827492');
 
       let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
@@ -66,7 +68,7 @@ describe('StraightBond class', () => {
      * will auto-initialize IDs.
      */
     it('does not auto-initialize the ID', () => {
-      let line = (new SVG.Line()).node;
+      let line = createSVGLineElement();
       expect(line.getAttribute('id')).toBeFalsy();
 
       let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
@@ -78,7 +80,7 @@ describe('StraightBond class', () => {
   });
 
   test('assignUUID method', () => {
-    let sb = new StraightBond((new SVG.Line()).node, new NucleobaseMock(), new NucleobaseMock());
+    let sb = new StraightBond(createSVGLineElement(), new NucleobaseMock(), new NucleobaseMock());
     expect(sb.id).toBeFalsy();
 
     sb.assignUUID();
@@ -89,7 +91,7 @@ describe('StraightBond class', () => {
   });
 
   test('getTotalLength method', () => {
-    let line = new LineMock();
+    let line = createSVGLineElement();
     line.getTotalLength = () => 18.0273994;
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
@@ -97,22 +99,50 @@ describe('StraightBond class', () => {
   });
 
   test('point1 getter', () => {
-    let line = new LineMock();
+    let line = createSVGLineElement();
 
-    line.getPointAtLength = length => length === 0 ? { x: 15.3819, y: -82.3718 } : null;
+    line.getPointAtLength = length => length === 0 ? { x: 15.3819, y: -82.3718 } : { x: 0, y: 0 };
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
     expect(sb.point1).toStrictEqual({ x: 15.3819, y: -82.3718 });
   });
 
   test('point2 getter', () => {
-    let line = new LineMock();
+    let line = createSVGLineElement();
 
     line.getTotalLength = () => 82.0028718;
 
-    line.getPointAtLength = length => length === 82.0028718 ? { x: -9927.3, y: 48791.3 } : null;
+    line.getPointAtLength = length => length === 82.0028718 ? { x: -9927.3, y: 48791.3 } : { x: 0, y: 0 };
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
     expect(sb.point2).toStrictEqual({ x: -9927.3, y: 48791.3 });
+  });
+
+  describe('basePadding1 getter', () => {
+    it('returns the initial distance between base 1 and point 1 of the straight bond', () => {
+      let line = createSVGLineElement();
+      line.getPointAtLength = length => length === 0 ? { x: 82.7, y: 101.8 } : { x: 0, y: 0 };
+
+      let base1 = new NucleobaseMock();
+      base1.centerPoint = { x: 72, y: 86 };
+
+      let sb = new StraightBond(line, base1, new NucleobaseMock());
+      expect(sb.basePadding1).toBeCloseTo(19.08219064992277);
+    });
+
+    test('its returned value is not affected by the movement of bases', () => {
+      let line = createSVGLineElement();
+      line.getPointAtLength = length => length === 0 ? { x: 50, y: 62 } : { x: 0, y: 0 };
+
+      let base1 = new NucleobaseMock();
+      base1.centerPoint = { x: 68, y: 33 };
+
+      let sb = new StraightBond(line, base1, new NucleobaseMock());
+
+      // move base 1
+      base1.centerPoint = { x: 500, y: 200 };
+
+      expect(sb.basePadding1).toBeCloseTo(34.132096331752024);
+    });
   });
 });
