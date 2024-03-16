@@ -82,4 +82,15 @@ describe('StraightBond class', () => {
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
     expect(sb.point1).toStrictEqual({ x: 15.3819, y: -82.3718 });
   });
+
+  test('point2 getter', () => {
+    let line = new LineMock();
+
+    line.getTotalLength = () => 82.0028718;
+
+    line.getPointAtLength = length => length === 82.0028718 ? { x: -9927.3, y: 48791.3 } : null;
+
+    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+    expect(sb.point2).toStrictEqual({ x: -9927.3, y: 48791.3 });
+  });
 });

@@ -61,4 +61,11 @@ export class StraightBond<B extends Nucleobase> {
   get point1(): Point {
     return this.domNode.getPointAtLength(0);
   }
+
+  /**
+   * The point connecting with base 2 of the straight bond.
+   */
+  get point2(): Point {
+    return this.domNode.getPointAtLength(this.getTotalLength());
+  }
 }
