@@ -19,6 +19,7 @@ export type Point = {
  */
 export class StraightBond<B extends Nucleobase> {
   private cachedBasePadding1: number;
+  private cachedBasePadding2: number;
 
   /**
    * @param line The line element that is the straight bond.
@@ -27,6 +28,7 @@ export class StraightBond<B extends Nucleobase> {
    */
   constructor(private line: SVGLineElement, readonly base1: B, readonly base2: B) {
     this.cachedBasePadding1 = distance(this.point1, this.base1.centerPoint);
+    this.cachedBasePadding2 = distance(this.point2, this.base2.centerPoint);
   }
 
   /**
@@ -98,5 +100,16 @@ export class StraightBond<B extends Nucleobase> {
    */
   get basePadding1(): number {
     return this.cachedBasePadding1;
+  }
+
+  /**
+   * The distance that point 2 is meant to be from base 2 of the straight bond.
+   *
+   * Note that this is not the same thing as the current distance between point 2 and base 2 of the straight bond.
+   *
+   * (This is to allow for proper repositioning of the straight bond after its bases have been moved.)
+   */
+  get basePadding2(): number {
+    return this.cachedBasePadding2;
   }
 }

@@ -145,4 +145,34 @@ describe('StraightBond class', () => {
       expect(sb.basePadding1).toBeCloseTo(34.132096331752024);
     });
   });
+
+  describe('basePadding2 getter', () => {
+    it('returns the initial distance between base 2 and point 2 of the straight bond', () => {
+      let line = createSVGLineElement();
+      line.getTotalLength = () => 52.808;
+      line.getPointAtLength = length => length === 52.808 ? { x: 35, y: 39.2 } : { x: 0, y: 0 };
+
+      let base2 = new NucleobaseMock();
+      base2.centerPoint = { x: 21.7, y: 42 };
+
+      let sb = new StraightBond(line, new NucleobaseMock(), base2);
+      expect(sb.basePadding2).toBeCloseTo(13.591541487263319);
+    });
+
+    test('its returned value is not affected by the movement of bases', () => {
+      let line = createSVGLineElement();
+      line.getTotalLength = () => 19;
+      line.getPointAtLength = length => length === 19 ? { x: 53, y: 41 } : { x: 0, y: 0 };
+
+      let base2 = new NucleobaseMock();
+      base2.centerPoint = { x: 40, y: 45 };
+
+      let sb = new StraightBond(line, new NucleobaseMock(), base2);
+
+      // move base 2
+      base2.centerPoint = { x: 1000, y: -300 };
+
+      expect(sb.basePadding2).toBeCloseTo(13.601470508735444);
+    });
+  });
 });
