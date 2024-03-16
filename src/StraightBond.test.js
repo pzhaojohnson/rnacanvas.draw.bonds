@@ -7,9 +7,12 @@ import { StraightBond } from './StraightBond';
 import * as SVG from '@svgdotjs/svg.js';
 
 class LineMock {
-  node = {
-    getTotalLength: () => 0,
-  };
+  getAttribute = () => {};
+  setAttribute = () => {};
+
+  id = '';
+
+  getTotalLength = () => 0;
 }
 
 class NucleobaseMock {
@@ -18,41 +21,41 @@ class NucleobaseMock {
 
 describe('StraightBond class', () => {
   test('domNode getter', () => {
-    let line = new SVG.Line();
+    let line = (new SVG.Line()).node;
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
 
-    expect(sb.domNode).toBe(line.node);
-    expect(line.node).toBeTruthy();
+    expect(sb.domNode).toBe(line);
+    expect(line).toBeTruthy();
   });
 
   describe('id getter', () => {
     it('returns the ID of the line element that is the straight bond', () => {
-      let line = new SVG.Line();
-      line.node.setAttribute('id', 'line-38147827491827492');
+      let line = (new SVG.Line()).node;
+      line.setAttribute('id', 'line-38147827491827492');
 
       let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
       expect(sb.id).toBe('line-38147827491827492');
     });
 
     /**
-     * Note that the `id` method provided by the SVG.js library
-     * will auto-initialize the IDs of SVG elements.
+     * Note that the `id` method provided by the SVG.js library for SVG elements
+     * will auto-initialize IDs.
      */
     it('does not auto-initialize the ID', () => {
-      let line = new SVG.Line();
-      expect(line.node.getAttribute('id')).toBeFalsy();
+      let line = (new SVG.Line()).node;
+      expect(line.getAttribute('id')).toBeFalsy();
 
       let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
       expect(sb.id).toBeFalsy();
 
       // is still falsy too
-      expect(line.node.getAttribute('id')).toBeFalsy();
+      expect(line.getAttribute('id')).toBeFalsy();
     });
   });
 
   test('assignUUID method', () => {
-    let sb = new StraightBond(new SVG.Line(), new NucleobaseMock(), new NucleobaseMock());
+    let sb = new StraightBond((new SVG.Line()).node, new NucleobaseMock(), new NucleobaseMock());
     expect(sb.id).toBeFalsy();
 
     sb.assignUUID();
@@ -61,7 +64,7 @@ describe('StraightBond class', () => {
 
   test('getTotalLength method', () => {
     let line = new LineMock();
-    line.node.getTotalLength = () => 18.0273994;
+    line.getTotalLength = () => 18.0273994;
 
     let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
     expect(sb.getTotalLength()).toBe(18.0273994);

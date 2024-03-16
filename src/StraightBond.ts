@@ -1,4 +1,4 @@
-import * as SVG from '@svgdotjs/svg.js';
+import { SVG } from '@svgdotjs/svg.js';
 
 import type { Nucleobase } from './Nucleobase';
 
@@ -13,22 +13,21 @@ export class StraightBond<B extends Nucleobase> {
    * @param base1 Base 1 connected by the bond.
    * @param base2 Base 2 connected by the bond.
    */
-  constructor(private line: SVG.Line, readonly base1: B, readonly base2: B) {}
+  constructor(private line: SVGLineElement, readonly base1: B, readonly base2: B) {}
 
   /**
-   * The actual DOM node that is the straight bond
-   * (i.e., the DOM node of its line element).
+   * The actual DOM node of the line element that is the straight bond.
    */
   get domNode() {
-    return this.line.node;
+    return this.line;
   }
 
   /**
-   * The `id` attribute of the line element that is the straight bond.
+   * The `id` property of the line element that is the straight bond.
    */
   get id() {
-    // don't use the `id` method provided by the SVG.js library
-    // (since it will auto-initialize the `id` attribute of an SVG element)
+    // don't use the `id` method provided by the SVG.js library for SVG elements
+    // (since it will auto-initialize IDs)
     return this.domNode.id;
   }
 
@@ -38,7 +37,7 @@ export class StraightBond<B extends Nucleobase> {
    * (Overwrites any preexisting ID that the straight bond had.)
    */
   assignUUID(): void {
-    assignUUID(this.line);
+    assignUUID(SVG(this.line));
   }
 
   /**
