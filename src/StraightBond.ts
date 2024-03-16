@@ -5,6 +5,14 @@ import type { Nucleobase } from './Nucleobase';
 import { assignUUID } from '@rnacanvas/draw.svg';
 
 /**
+ * A two-dimensional point.
+ */
+export type Point = {
+  x: number;
+  y: number;
+};
+
+/**
  * A bond that is a straight line between two bases.
  */
 export class StraightBond<B extends Nucleobase> {
@@ -45,5 +53,12 @@ export class StraightBond<B extends Nucleobase> {
    */
   getTotalLength(): number {
     return this.domNode.getTotalLength();
+  }
+
+  /**
+   * The point connecting with base 1 of the straight bond.
+   */
+  get point1(): Point {
+    return this.domNode.getPointAtLength(0);
   }
 }
