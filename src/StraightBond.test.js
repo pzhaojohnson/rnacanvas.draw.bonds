@@ -27,7 +27,7 @@ describe('StraightBond class', () => {
   });
 
   describe('id getter', () => {
-    it('returns the ID of the line element for the straight bond', () => {
+    it('returns the ID of the line element that is the straight bond', () => {
       let line = new SVG.Line();
       line.node.setAttribute('id', 'line-38147827491827492');
 
@@ -35,21 +35,25 @@ describe('StraightBond class', () => {
       expect(sb.id).toBe('line-38147827491827492');
     });
 
+    /**
+     * Note that the `id` method provided by the SVG.js library
+     * will auto-initialize the IDs of SVG elements.
+     */
     it('does not auto-initialize the ID', () => {
       let line = new SVG.Line();
-      expect(line.node.getAttribute('id')).toBe(null);
+      expect(line.node.getAttribute('id')).toBeFalsy();
 
       let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
-      expect(sb.id).toBe(null);
+      expect(sb.id).toBeFalsy();
 
-      // is still null too
-      expect(line.node.getAttribute('id')).toBe(null);
+      // is still falsy too
+      expect(line.node.getAttribute('id')).toBeFalsy();
     });
   });
 
   test('assignUUID method', () => {
     let sb = new StraightBond(new SVG.Line(), new NucleobaseMock(), new NucleobaseMock());
-    expect(sb.id).toBe(null);
+    expect(sb.id).toBeFalsy();
 
     sb.assignUUID();
     expect(sb.id.length).toBeGreaterThanOrEqual(36);

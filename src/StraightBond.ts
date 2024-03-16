@@ -28,8 +28,8 @@ export class StraightBond<B extends Nucleobase> {
    */
   get id() {
     // don't use the `id` method provided by the SVG.js library
-    // (since it will auto-initialize the `id` attribute of an element)
-    return this.domNode.getAttribute('id');
+    // (since it will auto-initialize the `id` attribute of an SVG element)
+    return this.domNode.id;
   }
 
   /**
