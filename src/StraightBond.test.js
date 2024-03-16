@@ -6,13 +6,18 @@ import { StraightBond } from './StraightBond';
 
 import * as SVG from '@svgdotjs/svg.js';
 
+const SVGLineElement = (new SVG.Line()).node.constructor;
+
+if (!SVGLineElement.prototype.getTotalLength) {
+  SVGLineElement.prototype.getTotalLength = () => 0;
+}
+
+if (!SVGLineElement.prototype.getPointAtLength) {
+  SVGLineElement.prototype.getPointAtLength = () => ({ x: 0, y: 0 });
+}
+
 function createSVGLineElement() {
-  let line = (new SVG.Line()).node;
-
-  line.getTotalLength = () => 0;
-  line.getPointAtLength = () => ({ x: 0, y: 0 });
-
-  return line;
+  return (new SVG.Line()).node;
 }
 
 class NucleobaseMock {
@@ -20,6 +25,40 @@ class NucleobaseMock {
 }
 
 describe('StraightBond class', () => {
+  describe('between static method', () => {
+    it('passes bases 1 and 2 to the newly created straight bond in the correct order', () => {
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+      let sb = StraightBond.between(base1, base2);
+
+      expect(sb.base1).toBe(base1);
+      expect(sb.base2).toBe(base2);
+
+      expect(base1).toBeTruthy();
+      expect(base2).toBeTruthy();
+    });
+
+    it('assigns a UUID to the newly created straight bond', () => {
+      let sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+      expect(sb.id.length).toBeGreaterThanOrEqual(36);
+    });
+
+    it('positions the newly created straight bond', () => {
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+
+      base1.centerPoint = { x: 512.8, y: 88.7 };
+      base2.centerPoint = { x: -102.4, y: -33 };
+
+      let sb = StraightBond.between(base1, base2);
+
+      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(512.8);
+      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(88.7);
+      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-102.4);
+      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-33);
+    });
+  });
+
   test('domNode getter', () => {
     let line = createSVGLineElement();
 

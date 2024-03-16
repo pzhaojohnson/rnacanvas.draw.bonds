@@ -1,5 +1,7 @@
 import { SVG } from '@svgdotjs/svg.js';
 
+import { Line as SVGLine } from '@svgdotjs/svg.js';
+
 import type { Nucleobase } from './Nucleobase';
 
 import { assignUUID } from '@rnacanvas/draw.svg';
@@ -18,6 +20,22 @@ export type Point = {
  * A bond that is a straight line between two bases.
  */
 export class StraightBond<B extends Nucleobase> {
+  /**
+   * Creates a new straight bond connecting bases 1 and 2.
+   */
+  static between<B extends Nucleobase>(base1: B, base2: B): StraightBond<B> {
+    let line = (new SVGLine()).node;
+    let sb = new StraightBond(line, base1, base2);
+
+    sb.assignUUID();
+
+    // position the newly created straight bond
+    sb.basePadding1 = 0;
+    sb.basePadding2 = 0;
+
+    return sb;
+  }
+
   private cachedBasePadding1: number;
   private cachedBasePadding2: number;
 
