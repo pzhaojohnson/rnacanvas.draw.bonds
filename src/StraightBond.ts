@@ -122,6 +122,14 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Will reposition the straight bond.
+   */
+  set basePadding2(basePadding2) {
+    this.cachedBasePadding2 = basePadding2;
+    this.reposition();
+  }
+
+  /**
    * Repositions the straight bond based on the current positions of base 1 and 2.
    *
    * Will also update the opacity of the straight bond as necessary.

@@ -202,6 +202,32 @@ describe('StraightBond class', () => {
     });
   });
 
+  test('basePadding2 setter', () => {
+    let line = createSVGLineElement();
+    line.getTotalLength = () => 23;
+    line.getPointAtLength = length => ({ '0': { x: 9, y: -6 }, '23': { x: 9, y: 24 } }[length]);
+
+    let base1 = new NucleobaseMock();
+    let base2 = new NucleobaseMock();
+
+    base1.centerPoint = { x: 9, y: -8 };
+    base2.centerPoint = { x: 9, y: 30 };
+
+    let sb = new StraightBond(line, base1, base2);
+    expect(sb.basePadding2).toBeCloseTo(6);
+
+    // must account for the movement of base 2
+    base2.centerPoint = { x: -30, y: -8 };
+
+    sb.basePadding2 = 10.5;
+    expect(sb.basePadding2).toBeCloseTo(10.5);
+
+    expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(7);
+    expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(-8);
+    expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-19.5);
+    expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-8);
+  });
+
   describe('reposition method', () => {
     it('repositions the straight bond', () => {
       let line = createSVGLineElement();
