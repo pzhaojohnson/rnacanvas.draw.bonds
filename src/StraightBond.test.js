@@ -30,6 +30,17 @@ describe('StraightBond class', () => {
     expect(line).toBeTruthy();
   });
 
+  test('getAttribute method', () => {
+    let line = (new SVG.Line()).node;
+    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+
+    line.setAttribute('stroke', '#5567ab');
+    line.setAttribute('stroke-width', '2.63');
+
+    expect(sb.getAttribute('stroke')).toBe('#5567ab');
+    expect(sb.getAttribute('stroke-width')).toBe('2.63');
+  });
+
   describe('id getter', () => {
     it('returns the ID of the line element that is the straight bond', () => {
       let line = (new SVG.Line()).node;

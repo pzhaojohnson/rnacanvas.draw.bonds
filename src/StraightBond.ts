@@ -31,6 +31,13 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Get an attribute of the line element that is the straight bond.
+   */
+  getAttribute(name: string) {
+    return this.domNode.getAttribute(name);
+  }
+
+  /**
    * The `id` property of the line element that is the straight bond.
    */
   get id() {
