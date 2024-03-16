@@ -118,35 +118,7 @@ describe('StraightBond class', () => {
     expect(sb.point2).toStrictEqual({ x: -9927.3, y: 48791.3 });
   });
 
-  describe('basePadding1 getter', () => {
-    it('returns the initial distance between base 1 and point 1 of the straight bond', () => {
-      let line = createSVGLineElement();
-      line.getPointAtLength = length => length === 0 ? { x: 82.7, y: 101.8 } : { x: 0, y: 0 };
-
-      let base1 = new NucleobaseMock();
-      base1.centerPoint = { x: 72, y: 86 };
-
-      let sb = new StraightBond(line, base1, new NucleobaseMock());
-      expect(sb.basePadding1).toBeCloseTo(19.08219064992277);
-    });
-
-    test('its returned value is not affected by the movement of bases', () => {
-      let line = createSVGLineElement();
-      line.getPointAtLength = length => length === 0 ? { x: 50, y: 62 } : { x: 0, y: 0 };
-
-      let base1 = new NucleobaseMock();
-      base1.centerPoint = { x: 68, y: 33 };
-
-      let sb = new StraightBond(line, base1, new NucleobaseMock());
-
-      // move base 1
-      base1.centerPoint = { x: 500, y: 200 };
-
-      expect(sb.basePadding1).toBeCloseTo(34.132096331752024);
-    });
-  });
-
-  test('basePadding1 setter', () => {
+  test('basePadding1 getter and setter', () => {
     let line = createSVGLineElement();
     line.getTotalLength = () => 19;
     line.getPointAtLength = length => ({ '0': { x: 18, y: 5 }, '19': { x: 37, y: 5 } }[length] ?? { x: 0, y: 0 });
@@ -160,8 +132,11 @@ describe('StraightBond class', () => {
     let sb = new StraightBond(line, base1, base2);
     expect(sb.basePadding1).toBeCloseTo(3);
 
-    // must also account for the movement of base 1
+    // must account for the movement of base 1
     base1.centerPoint = { x: 45, y: 50 };
+
+    // has not changed yet
+    expect(sb.basePadding1).toBeCloseTo(3);
 
     sb.basePadding1 = 7;
     expect(sb.basePadding1).toBeCloseTo(7);
@@ -172,37 +147,7 @@ describe('StraightBond class', () => {
     expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(13);
   });
 
-  describe('basePadding2 getter', () => {
-    it('returns the initial distance between base 2 and point 2 of the straight bond', () => {
-      let line = createSVGLineElement();
-      line.getTotalLength = () => 52.808;
-      line.getPointAtLength = length => length === 52.808 ? { x: 35, y: 39.2 } : { x: 0, y: 0 };
-
-      let base2 = new NucleobaseMock();
-      base2.centerPoint = { x: 21.7, y: 42 };
-
-      let sb = new StraightBond(line, new NucleobaseMock(), base2);
-      expect(sb.basePadding2).toBeCloseTo(13.591541487263319);
-    });
-
-    test('its returned value is not affected by the movement of bases', () => {
-      let line = createSVGLineElement();
-      line.getTotalLength = () => 19;
-      line.getPointAtLength = length => length === 19 ? { x: 53, y: 41 } : { x: 0, y: 0 };
-
-      let base2 = new NucleobaseMock();
-      base2.centerPoint = { x: 40, y: 45 };
-
-      let sb = new StraightBond(line, new NucleobaseMock(), base2);
-
-      // move base 2
-      base2.centerPoint = { x: 1000, y: -300 };
-
-      expect(sb.basePadding2).toBeCloseTo(13.601470508735444);
-    });
-  });
-
-  test('basePadding2 setter', () => {
+  test('basePadding2 getter and setter', () => {
     let line = createSVGLineElement();
     line.getTotalLength = () => 23;
     line.getPointAtLength = length => ({ '0': { x: 9, y: -6 }, '23': { x: 9, y: 24 } }[length]);
@@ -218,6 +163,9 @@ describe('StraightBond class', () => {
 
     // must account for the movement of base 2
     base2.centerPoint = { x: -30, y: -8 };
+
+    // has not changed yet
+    expect(sb.basePadding2).toBeCloseTo(6);
 
     sb.basePadding2 = 10.5;
     expect(sb.basePadding2).toBeCloseTo(10.5);
