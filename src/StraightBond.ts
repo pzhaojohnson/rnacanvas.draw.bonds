@@ -7,13 +7,13 @@ import { assignUUID } from '@rnacanvas/draw.svg';
 /**
  * A bond that is a straight line between two bases.
  */
-export class StraightBond {
+export class StraightBond<B extends Nucleobase> {
   /**
    * @param line The line element that is the straight bond.
    * @param base1 Base 1 connected by the bond.
    * @param base2 Base 2 connected by the bond.
    */
-  constructor(private line: SVG.Line, readonly base1: Nucleobase, readonly base2: Nucleobase) {}
+  constructor(private line: SVG.Line, readonly base1: B, readonly base2: B) {}
 
   /**
    * The actual DOM node that is the straight bond
