@@ -130,14 +130,7 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
-   * Repositions the straight bond based on the current positions of base 1 and 2.
-   *
-   * Will also update the opacity of the straight bond as necessary.
-   *
-   * Will set the opacity of the straight bond to zero if base paddings 1 and 2 add up to more than
-   * the distance between the center points of bases 1 and 2.
-   *
-   * Will set the opacity of the straight bond to one otherwise.
+   * Repositions the straight bond based on the current positions of bases 1 and 2.
    */
   reposition(): void {
     let centerPoint1 = this.base1.centerPoint;
@@ -149,11 +142,5 @@ export class StraightBond<B extends Nucleobase> {
     this.setAttribute('y1', `${centerPoint1.y + (this.basePadding1 * Math.sin(a))}`);
     this.setAttribute('x2', `${centerPoint2.x - (this.basePadding2 * Math.cos(a))}`);
     this.setAttribute('y2', `${centerPoint2.y - (this.basePadding2 * Math.sin(a))}`);
-
-    if (this.basePadding1 + this.basePadding2 >= distance(centerPoint1, centerPoint2)) {
-      this.setAttribute('opacity', '0');
-    } else {
-      this.setAttribute('opacity', '1');
-    }
   }
 }
