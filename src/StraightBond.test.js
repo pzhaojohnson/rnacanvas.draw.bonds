@@ -175,4 +175,87 @@ describe('StraightBond class', () => {
       expect(sb.basePadding2).toBeCloseTo(13.601470508735444);
     });
   });
+
+  describe('reposition method', () => {
+    it('repositions the straight bond', () => {
+      let line = createSVGLineElement();
+
+      line.getTotalLength = () => 36.71511950137164;
+
+      line.getPointAtLength = (
+        length => length === 0 ? { x: 12, y: 84 } : length === 36.71511950137164 ? { x: 30, y: 52 } : { x: 0, y: 0 }
+      );
+
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+
+      base1.centerPoint = { x: 9, y: 89 };
+      base2.centerPoint = { x: 34, y: 50 };
+
+      let sb = new StraightBond(line, base1, base2);
+
+      // move bases 1 and 2
+      base1.centerPoint = { x: 300, y: 500 };
+      base2.centerPoint = { x: -120, y: -129 };
+
+      sb.reposition();
+
+      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(296.76201248158316);
+      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(495.15072821646623);
+      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-117.51657693904951);
+      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-125.28077832062415);
+    });
+
+    it('sets opacity to zero if base paddings 1 and 2 overlap', () => {
+      let line = createSVGLineElement();
+      line.setAttribute('opacity', '1');
+
+      line.getTotalLength = () => 10;
+
+      line.getPointAtLength = (
+        length => length === 0 ? { x: 25, y: 20 } : length === 10 ? { x: 35, y: 20 } : { x: 0, y: 0 }
+      );
+
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+
+      base1.centerPoint = { x: 23, y: 20 };
+      base2.centerPoint = { x: 44, y: 20 };
+
+      let sb = new StraightBond(line, base1, base2);
+
+      base1.centerPoint = { x: 21, y: 11 };
+      base2.centerPoint = { x: 23.5, y: 14 };
+
+      expect(line.getAttribute('opacity')).toBe('1');
+      sb.reposition();
+      expect(line.getAttribute('opacity')).toBe('0');
+    });
+
+    it('sets opacity to one if base paddings 1 and 2 do not overlap', () => {
+      let line = createSVGLineElement();
+      line.setAttribute('opacity', '0');
+
+      line.getTotalLength = () => 10;
+
+      line.getPointAtLength = (
+        length => length === 0 ? { x: 25, y: 20 } : length === 10 ? { x: 35, y: 20 } : { x: 0, y: 0 }
+      );
+
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+
+      base1.centerPoint = { x: 23, y: 20 };
+      base2.centerPoint = { x: 44, y: 20 };
+
+      let sb = new StraightBond(line, base1, base2);
+
+      base1.centerPoint = { x: 21, y: 110 };
+      base2.centerPoint = { x: 23.5, y: 14 };
+
+      expect(line.getAttribute('opacity')).toBe('0');
+      sb.reposition();
+      expect(line.getAttribute('opacity')).toBe('1');
+    });
+  });
 });
