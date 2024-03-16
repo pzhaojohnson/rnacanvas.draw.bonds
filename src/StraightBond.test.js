@@ -60,6 +60,9 @@ describe('StraightBond class', () => {
 
     sb.assignUUID();
     expect(sb.id.length).toBeGreaterThanOrEqual(36);
+
+    // must begin with a letter (per the rules for SVG element IDs)
+    expect(sb.id.charAt(0)).toMatch(/[A-Za-z]/);
   });
 
   test('getTotalLength method', () => {
