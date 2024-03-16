@@ -10,8 +10,5 @@ export type Point = {
  * The nucleobase interface used by bonds.
  */
 export interface Nucleobase {
-  /**
-   * Is gettable and settable.
-   */
-  centerPoint: Point;
+  readonly centerPoint: Point;
 }
