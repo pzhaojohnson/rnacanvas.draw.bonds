@@ -1,6 +1,4 @@
-import { SVG } from '@svgdotjs/svg.js';
-
-import { Line as SVGLine } from '@svgdotjs/svg.js';
+import * as SVG from '@svgdotjs/svg.js';
 
 import type { Nucleobase } from './Nucleobase';
 
@@ -24,7 +22,7 @@ export class StraightBond<B extends Nucleobase> {
    * Creates a new straight bond connecting bases 1 and 2.
    */
   static between<B extends Nucleobase>(base1: B, base2: B): StraightBond<B> {
-    let line = (new SVGLine()).node;
+    let line = (new SVG.Line()).node;
     let sb = new StraightBond(line, base1, base2);
 
     sb.assignUUID();
@@ -85,7 +83,7 @@ export class StraightBond<B extends Nucleobase> {
    * (Overwrites any preexisting ID that the straight bond had.)
    */
   assignUUID(): void {
-    assignUUID(SVG(this.line));
+    assignUUID(this.domNode);
   }
 
   /**

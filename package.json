@@ -1,6 +1,6 @@
 {
   "name": "@rnacanvas/draw.bonds",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "Draw bonds between nucleobases",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@rnacanvas/draw.svg": "^1.4.0",
+    "@rnacanvas/draw.svg": "^2.0.0",
     "@rnacanvas/points": "^1.12.0",
     "@svgdotjs/svg.js": "^3.2.0"
   }
