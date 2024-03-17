@@ -279,4 +279,34 @@ describe('StraightBond class', () => {
     expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-117.51657693904951);
     expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-125.28077832062415);
   });
+
+  describe('basesMoved method', () => {
+    it('repositions the straight bond', () => {
+      let base1 = new NucleobaseMock();
+      let base2 = new NucleobaseMock();
+
+      base1.centerPoint = { x: -1, y: 10 };
+      base2.centerPoint = { x: 2, y: 6 };
+
+      let sb = StraightBond.between(base1, base2);
+
+      sb.basePadding1 = 0;
+      sb.basePadding2 = 0;
+
+      base1.centerPoint = { x: -5, y: -10 };
+      base2.centerPoint = { x: 5, y: -12 };
+
+      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(-1);
+      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(10);
+      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(2);
+      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(6);
+
+      sb.basesMoved();
+
+      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(-5);
+      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(-10);
+      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(5);
+      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-12);
+    });
+  });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@rnacanvas/draw.bonds",
-  "version": "3.4.2",
+  "version": "3.5.0",
   "description": "Draw bonds between nucleobases",
   "repository": {
     "type": "git",

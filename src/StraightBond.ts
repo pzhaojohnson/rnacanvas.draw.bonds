@@ -185,4 +185,13 @@ export class StraightBond<B extends Nucleobase> {
     this.setAttribute('x2', `${centerPoint2.x - (this.basePadding2 * Math.cos(a))}`);
     this.setAttribute('y2', `${centerPoint2.y - (this.basePadding2 * Math.sin(a))}`);
   }
+
+  /**
+   * Signals to the straight bond that bases have moved,
+   * causing necessary follow-up actions to be performed
+   * (e.g., repositioning the straight bond).
+   */
+  basesMoved(): void {
+    this.reposition();
+  }
 }
