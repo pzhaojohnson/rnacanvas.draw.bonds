@@ -113,6 +113,15 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Returns true if the line element that is the straight bond is a child of any sort of parent container node.
+   *
+   * Returns false otherwise.
+   */
+  hasParent(): boolean {
+    return this.domNode.parentNode ? true : false;
+  }
+
+  /**
    * The length of the line element that is the straight bond.
    */
   getTotalLength(): number {

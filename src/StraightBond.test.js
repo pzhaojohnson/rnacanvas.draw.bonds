@@ -169,6 +169,23 @@ describe('StraightBond class', () => {
     expect(sb.isIn(line)).toBe(false);
   });
 
+  test('hasParent method', () => {
+    let sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+    expect(sb.hasParent()).toBe(false);
+
+    let container1 = (new SVG.Svg()).node;
+    sb.appendTo(container1);
+    expect(sb.hasParent()).toBe(true);
+
+    sb.remove();
+    expect(sb.hasParent()).toBe(false);
+
+    // without calling any sort of append/insert method of the straight bond directly
+    let container2 = (new SVG.Svg()).node;
+    container2.appendChild(sb.domNode);
+    expect(sb.hasParent()).toBe(true);
+  });
+
   test('getTotalLength method', () => {
     let line = createSVGLineElement();
     line.getTotalLength = () => 18.0273994;
