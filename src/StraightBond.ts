@@ -96,6 +96,15 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Removes the line element that is the straight bond from its parent container node.
+   *
+   * Has no effect if the straight bond (line element) had no parent container node to begin with.
+   */
+  remove(): void {
+    this.domNode.remove();
+  }
+
+  /**
    * The length of the line element that is the straight bond.
    */
   getTotalLength(): number {

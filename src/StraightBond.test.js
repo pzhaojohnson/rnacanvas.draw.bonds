@@ -140,6 +140,18 @@ describe('StraightBond class', () => {
     expect(container.contains(line)).toBeTruthy();
   });
 
+  test('remove method', () => {
+    let line = createSVGLineElement();
+    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+
+    let container = (new SVG.Svg()).node;
+    sb.appendTo(container);
+
+    expect(container.contains(line)).toBeTruthy();
+    sb.remove();
+    expect(container.contains(line)).toBeFalsy();
+  });
+
   test('getTotalLength method', () => {
     let line = createSVGLineElement();
     line.getTotalLength = () => 18.0273994;
