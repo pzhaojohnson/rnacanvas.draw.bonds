@@ -152,6 +152,23 @@ describe('StraightBond class', () => {
     expect(container.contains(line)).toBeFalsy();
   });
 
+  test('isIn method', () => {
+    let line = createSVGLineElement();
+    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+
+    let container1 = (new SVG.Svg()).node;
+    let container2 = (new SVG.Svg()).node;
+
+    sb.appendTo(container1);
+
+    expect(sb.isIn(container1)).toBe(true);
+    expect(sb.isIn(container2)).toBe(false);
+
+    // also worth checking
+    // (since the `contains` method of nodes will return true for the node itself)
+    expect(sb.isIn(line)).toBe(false);
+  });
+
   test('getTotalLength method', () => {
     let line = createSVGLineElement();
     line.getTotalLength = () => 18.0273994;

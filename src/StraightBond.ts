@@ -105,6 +105,16 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Returns true if the line element that is the straight bond is a child (or grandchild, great-grandchild, etc.)
+   * of the given container node.
+   *
+   * Returns false otherwise, including if the given container node is the straight bond (line element) itself.
+   */
+  isIn(container: Node): boolean {
+    return container.contains(this.domNode) && container !== this.domNode;
+  }
+
+  /**
    * The length of the line element that is the straight bond.
    */
   getTotalLength(): number {
