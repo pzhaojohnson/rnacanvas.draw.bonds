@@ -129,6 +129,13 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Get a point along the length of the straight bond (going from point 1 to point 2).
+   */
+  getPointAtLength(length: number): Point {
+    return this.domNode.getPointAtLength(length);
+  }
+
+  /**
    * The point connecting with base 1 of the straight bond.
    */
   get point1(): Point {
