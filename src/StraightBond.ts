@@ -210,4 +210,17 @@ export class StraightBond<B extends Nucleobase> {
   basesMoved(): void {
     this.reposition();
   }
+
+  /**
+   * Signals to the straight bond that bases have been removed,
+   * causing necessary follow-up actions to be performed.
+   *
+   * If either base 1 or 2 of the straight bond lacks a parent container node (i.e., was removed),
+   * then the straight bond will remove itself from any parent container node that it is in.
+   */
+  basesRemoved(): void {
+    if (!this.base1.hasParent() || !this.base2.hasParent()) {
+      this.remove();
+    }
+  }
 }

@@ -22,6 +22,8 @@ function createSVGLineElement() {
 
 class NucleobaseMock {
   centerPoint = { x: 0, y: 0 };
+
+  hasParent = () => false;
 }
 
 describe('StraightBond class', () => {
@@ -333,6 +335,44 @@ describe('StraightBond class', () => {
       expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(-10);
       expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(5);
       expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-12);
+    });
+  });
+
+  describe('basesRemoved method', () => {
+    let base1 = new NucleobaseMock();
+    let base2 = new NucleobaseMock();
+
+    let sb = StraightBond.between(base1, base2);
+
+    let container = (new SVG.Svg()).node;
+
+    beforeEach(() => sb.appendTo(container));
+
+    test('when neither base 1 nor 2 of the straight bond were removed', () => {
+      base1.hasParent = () => true;
+      base2.hasParent = () => true;
+
+      expect(sb.isIn(container)).toBeTruthy();
+      sb.basesRemoved();
+      expect(sb.isIn(container)).toBeTruthy();
+    });
+
+    test('when base 1 was removed', () => {
+      base1.hasParent = () => false;
+      base2.hasParent = () => true;
+
+      expect(sb.isIn(container)).toBeTruthy();
+      sb.basesRemoved();
+      expect(sb.isIn(container)).toBeFalsy();
+    });
+
+    test('when base 2 was removed', () => {
+      base1.hasParent = () => true;
+      base2.hasParent = () => false;
+
+      expect(sb.isIn(container)).toBeTruthy();
+      sb.basesRemoved();
+      expect(sb.isIn(container)).toBeFalsy();
     });
   });
 });
