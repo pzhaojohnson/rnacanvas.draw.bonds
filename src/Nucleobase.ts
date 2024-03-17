@@ -11,4 +11,11 @@ export type Point = {
  */
 export interface Nucleobase {
   readonly centerPoint: Point;
+
+  /**
+   * Returns true if the nucleobase is a child of a parent container node.
+   *
+   * Returns false otherwise.
+   */
+  hasParent(): boolean;
 }
