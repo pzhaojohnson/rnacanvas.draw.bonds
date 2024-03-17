@@ -89,6 +89,13 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Appends the line element that is the straight bond to the given container node.
+   */
+  appendTo(container: Node): void {
+    container.appendChild(this.domNode);
+  }
+
+  /**
    * The length of the line element that is the straight bond.
    */
   getTotalLength(): number {
