@@ -48,6 +48,13 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * The two bases bound by the straight bond.
+   */
+  get basePair(): [B, B] {
+    return [this.base1, this.base2];
+  }
+
+  /**
    * The actual DOM node of the line element that is the straight bond.
    */
   get domNode() {

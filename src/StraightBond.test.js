@@ -61,6 +61,17 @@ describe('StraightBond class', () => {
     });
   });
 
+  test('basePair getter', () => {
+    let base1 = new NucleobaseMock();
+    let base2 = new NucleobaseMock();
+
+    let sb = StraightBond.between(base1, base2);
+
+    expect(sb.basePair).toStrictEqual([base1, base2]);
+    expect(sb.basePair[0]).toBe(base1);
+    expect(sb.basePair[1]).toBe(base2);
+  });
+
   test('domNode getter', () => {
     let line = createSVGLineElement();
 
