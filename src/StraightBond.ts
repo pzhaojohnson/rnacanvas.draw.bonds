@@ -49,6 +49,9 @@ export class StraightBond<B extends Nucleobase> {
 
   /**
    * The two bases bound by the straight bond.
+   *
+   * In the returned base-pair, the two bases bound by the straight bond
+   * will be ordered base 1 and then base 2.
    */
   get basePair(): [B, B] {
     return [this.base1, this.base2];
