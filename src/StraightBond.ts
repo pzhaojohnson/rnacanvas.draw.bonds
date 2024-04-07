@@ -133,15 +133,19 @@ export class StraightBond<B extends Nucleobase> {
 
   /**
    * The length of the line element that is the straight bond.
+   *
+   * Note that this method might throw if the straight bond has not been added to the document of the webpage.
    */
-  getTotalLength(): number {
+  getTotalLength(): number | never {
     return this.domNode.getTotalLength();
   }
 
   /**
    * Get a point along the length of the straight bond (going from point 1 to point 2).
+   *
+   * Note that this method might throw if the straight bond has not been added to the document of the webpage.
    */
-  getPointAtLength(length: number): Point {
+  getPointAtLength(length: number): Point | never {
     return this.domNode.getPointAtLength(length);
   }
 
@@ -149,14 +153,24 @@ export class StraightBond<B extends Nucleobase> {
    * The point connecting with base 1 of the straight bond.
    */
   get point1(): Point {
-    return this.domNode.getPointAtLength(0);
+    // don't use `getPointAtLength` method to retrieve this point
+    // (might throw if the straight bond has not been added to the document of the webpage)
+    return {
+      x: this.domNode.x1.baseVal.value,
+      y: this.domNode.y1.baseVal.value,
+    };
   }
 
   /**
    * The point connecting with base 2 of the straight bond.
    */
   get point2(): Point {
-    return this.domNode.getPointAtLength(this.getTotalLength());
+    // don't use `getPointAtLength` or `getTotalLength` methods when retrieving this point
+    // (they might throw errors if the straight bond has not been added to the document of the webpage)
+    return {
+      x: this.domNode.x2.baseVal.value,
+      y: this.domNode.y2.baseVal.value,
+    };
   }
 
   /**

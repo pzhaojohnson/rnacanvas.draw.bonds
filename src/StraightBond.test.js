@@ -8,6 +8,15 @@ import * as SVG from '@svgdotjs/svg.js';
 
 const SVGLineElement = (new SVG.Line()).node.constructor;
 
+['x1', 'y1', 'x2', 'y2'].forEach(coordinateName => {
+  if (!SVGLineElement.prototype[coordinateName]) {
+    Object.defineProperty(SVGLineElement.prototype, coordinateName, {
+      value: { baseVal: { value: 0 } },
+      writable: true,
+    });
+  }
+});
+
 if (!SVGLineElement.prototype.getTotalLength) {
   SVGLineElement.prototype.getTotalLength = () => 0;
 }
@@ -216,30 +225,72 @@ describe('StraightBond class', () => {
     expect(sb.getPointAtLength(17.48)).toStrictEqual({ x: 84.02, y: -12.338 });
   });
 
-  test('point1 getter', () => {
-    let line = createSVGLineElement();
+  describe('point1 getter', () => {
+    it('returns point 1', () => {
+      let line = createSVGLineElement();
 
-    line.getPointAtLength = length => length === 0 ? { x: 15.3819, y: -82.3718 } : { x: 0, y: 0 };
+      line.x1 = { baseVal: { value: 15.3819 } };
+      line.y1 = { baseVal: { value: -82.3718 } };
 
-    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
-    expect(sb.point1).toStrictEqual({ x: 15.3819, y: -82.3718 });
+      let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+      expect(sb.point1).toStrictEqual({ x: 15.3819, y: -82.3718 });
+    });
+
+    /**
+     * The `getPointAtLength` method might throw if the straight bond has not been added to the document
+     * of the webpage.
+     */
+    it('does not use getPointAtLength method', () => {
+      let line = createSVGLineElement();
+      line.getPointAtLength = jest.fn();
+
+      let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+
+      // access
+      sb.point1;
+
+      expect(line.getPointAtLength).not.toHaveBeenCalled();
+    });
   });
 
-  test('point2 getter', () => {
-    let line = createSVGLineElement();
+  describe('point2 getter', () => {
+    it('returns point 2', () => {
+      let line = createSVGLineElement();
 
-    line.getTotalLength = () => 82.0028718;
+      line.x2 = { baseVal: { value: -9927.3 } };
+      line.y2 = { baseVal: { value: 48791.3 } };
 
-    line.getPointAtLength = length => length === 82.0028718 ? { x: -9927.3, y: 48791.3 } : { x: 0, y: 0 };
+      let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+      expect(sb.point2).toStrictEqual({ x: -9927.3, y: 48791.3 });
+    });
 
-    let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
-    expect(sb.point2).toStrictEqual({ x: -9927.3, y: 48791.3 });
+    /**
+     * The `getPointAtLength` and `getTotalLength` methods might throw if the straight bond has not been added
+     * to the document of the webpage.
+     */
+    it('does not use getPointAtLength or getTotalLength methods', () => {
+      let line = createSVGLineElement();
+
+      line.getPointAtLength = jest.fn();
+      line.getTotalLength = jest.fn();
+
+      let sb = new StraightBond(line, new NucleobaseMock(), new NucleobaseMock());
+
+      // access
+      sb.point2;
+
+      expect(line.getPointAtLength).not.toHaveBeenCalled();
+      expect(line.getTotalLength).not.toHaveBeenCalled();
+    });
   });
 
   test('basePadding1 getter and setter', () => {
     let line = createSVGLineElement();
-    line.getTotalLength = () => 19;
-    line.getPointAtLength = length => ({ '0': { x: 18, y: 5 }, '19': { x: 37, y: 5 } }[length] ?? { x: 0, y: 0 });
+
+    line.x1 = { baseVal: { value: 18 } };
+    line.y1 = { baseVal: { value: 5 } };
+    line.x2 = { baseVal: { value: 37 } };
+    line.y2 = { baseVal: { value: 5 } };
 
     let base1 = new NucleobaseMock();
     let base2 = new NucleobaseMock();
@@ -267,8 +318,11 @@ describe('StraightBond class', () => {
 
   test('basePadding2 getter and setter', () => {
     let line = createSVGLineElement();
-    line.getTotalLength = () => 23;
-    line.getPointAtLength = length => ({ '0': { x: 9, y: -6 }, '23': { x: 9, y: 24 } }[length]);
+
+    line.x1 = { baseVal: { value: 9 } };
+    line.y1 = { baseVal: { value: -6 } };
+    line.x2 = { baseVal: { value: 9 } };
+    line.y2 = { baseVal: { value: 24 } };
 
     let base1 = new NucleobaseMock();
     let base2 = new NucleobaseMock();
@@ -296,8 +350,11 @@ describe('StraightBond class', () => {
 
   test('reposition method', () => {
     let line = createSVGLineElement();
-    line.getTotalLength = () => 36.71511950137164;
-    line.getPointAtLength = length => ({ '0': { x: 12, y: 84 }, '36.71511950137164': { x: 30, y: 52 } }[length]);
+
+    line.x1 = { baseVal: { value: 12 } };
+    line.y1 = { baseVal: { value: 84 } };
+    line.x2 = { baseVal: { value: 30 } };
+    line.y2 = { baseVal: { value: 52 } };
 
     let base1 = new NucleobaseMock();
     let base2 = new NucleobaseMock();
