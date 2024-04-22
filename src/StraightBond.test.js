@@ -33,6 +33,14 @@ class NucleobaseMock {
   centerPoint = { x: 0, y: 0 };
 
   hasParent = () => false;
+
+  eventListeners = {
+    'move': [],
+  };
+
+  addEventListener(eventName, listener) {
+    this.eventListeners[eventName].push(listener);
+  }
 }
 
 describe('StraightBond class', () => {

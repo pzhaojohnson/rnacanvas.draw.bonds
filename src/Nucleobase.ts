@@ -18,4 +18,9 @@ export interface Nucleobase {
    * Returns false otherwise.
    */
   hasParent(): boolean;
+
+  /**
+   * Allows one to listen for when the nucleobase moves (i.e., its center point changes).
+   */
+  addEventListener(eventName: 'move', listener: () => void): void;
 }
