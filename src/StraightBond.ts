@@ -45,6 +45,9 @@ export class StraightBond<B extends Nucleobase> {
   constructor(private line: SVGLineElement, readonly base1: B, readonly base2: B) {
     this.cachedBasePadding1 = distance(this.point1, this.base1.centerPoint);
     this.cachedBasePadding2 = distance(this.point2, this.base2.centerPoint);
+
+    base1.addEventListener('move', () => this.reposition());
+    base2.addEventListener('move', () => this.reposition());
   }
 
   /**
