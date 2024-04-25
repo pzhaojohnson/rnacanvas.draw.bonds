@@ -8,6 +8,8 @@ import { distance, direction } from '@rnacanvas/points';
 
 import { isFiniteNumber } from '@rnacanvas/value-check';
 
+import { isNonNullObject } from '@rnacanvas/value-check';
+
 /**
  * A two-dimensional point.
  */
@@ -81,6 +83,22 @@ export class StraightBond<B extends Nucleobase> {
    */
   setAttribute(name: string, value: string): void {
     this.domNode.setAttribute(name, value);
+  }
+
+  /**
+   * This method is meant to receive as input an object of attribute values
+   * keyed by attribute name.
+   *
+   * Invalid inputs are ignored.
+   */
+  setAttributes(attributes: { [name: string]: unknown } | unknown): void {
+    if (!isNonNullObject(attributes)) {
+      return;
+    }
+
+    try {
+      (new SVG.Line(this.domNode)).attr(attributes);
+    } catch {}
   }
 
   /**

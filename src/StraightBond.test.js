@@ -122,6 +122,26 @@ describe('StraightBond class', () => {
     expect(line.getAttribute('stroke-linecap')).toBe('round');
   });
 
+  describe('setAttributes method', () => {
+    it('sets attributes', () => {
+      let sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+
+      sb.setAttributes({ 'stroke': '#ee52bc', 'stroke-width': '8.27', 'stroke-dasharray': '2 3.1 5 5' });
+
+      expect(sb.line.getAttribute('stroke')).toBe('#ee52bc');
+      expect(sb.line.getAttribute('stroke-width')).toBe('8.27');
+      expect(sb.line.getAttribute('stroke-dasharray')).toBe('2 3.1 5 5');
+    });
+
+    test('invalid inputs', () => {
+      let sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+
+      expect(() => sb.setAttributes({ 'asdf': false })).not.toThrow();
+      expect(() => sb.setAttributes(null)).not.toThrow();
+      expect(() => sb.setAttributes('qwer')).not.toThrow();
+    });
+  });
+
   describe('id getter', () => {
     it('returns the ID of the line element that is the straight bond', () => {
       let line = createSVGLineElement();
