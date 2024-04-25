@@ -71,10 +71,10 @@ describe('StraightBond class', () => {
 
       let sb = StraightBond.between(base1, base2);
 
-      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(512.8);
-      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(88.7);
-      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-102.4);
-      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-33);
+      expect(Number.parseFloat(sb.getAttribute('x1'))).toBeCloseTo(506.9140633847461);
+      expect(Number.parseFloat(sb.getAttribute('y1'))).toBeCloseTo(87.53563315007088);
+      expect(Number.parseFloat(sb.getAttribute('x2'))).toBeCloseTo(-96.51406338474614);
+      expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(-31.835633150070876);
     });
   });
 

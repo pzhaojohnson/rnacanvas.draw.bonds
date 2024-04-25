@@ -33,7 +33,22 @@ const setterMethodNames = {
  */
 export class StraightBond<B extends Nucleobase> {
   /**
+   * Default values for newly created straight bonds.
+   */
+  static defaults = {
+    attributes: {
+      'stroke': '#000000',
+      'stroke-width': '2',
+    },
+    basePadding1: 6,
+    basePadding2: 6,
+  };
+
+  /**
    * Creates a new straight bond connecting bases 1 and 2.
+   *
+   * Applies the default values contained in the `defaults` static property object
+   * to the newly created straight bond.
    */
   static between<B extends Nucleobase>(base1: B, base2: B): StraightBond<B> {
     let line = (new SVG.Line()).node;
@@ -41,9 +56,10 @@ export class StraightBond<B extends Nucleobase> {
 
     sb.assignUUID();
 
-    // position the newly created straight bond
-    sb.basePadding1 = 0;
-    sb.basePadding2 = 0;
+    sb.set(StraightBond.defaults);
+
+    // to make sure that the newly created straight bond is positioned properly
+    sb.reposition();
 
     return sb;
   }
@@ -52,6 +68,8 @@ export class StraightBond<B extends Nucleobase> {
   private cachedBasePadding2: number;
 
   /**
+   * Note that this constructor will not apply any default values to the newly created straight bond.
+   *
    * @param line The line element that is the straight bond.
    * @param base1 Base 1 connected by the bond.
    * @param base2 Base 2 connected by the bond.
