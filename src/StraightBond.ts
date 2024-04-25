@@ -6,6 +6,8 @@ import { assignUUID } from '@rnacanvas/draw.svg';
 
 import { distance, direction } from '@rnacanvas/points';
 
+import { isFiniteNumber } from '@rnacanvas/value-check';
+
 /**
  * A two-dimensional point.
  */
@@ -193,6 +195,20 @@ export class StraightBond<B extends Nucleobase> {
   set basePadding1(basePadding1) {
     this.cachedBasePadding1 = basePadding1;
     this.reposition();
+  }
+
+  /**
+   * Values that are not finite numbers are ignored.
+   *
+   * Negative values are clamped to zero.
+   */
+  setBasePadding1(basePadding1: number | unknown): void {
+    if (!isFiniteNumber(basePadding1)) {
+      return;
+    }
+
+    // make at least zero
+    this.basePadding1 = Math.max(0, basePadding1);
   }
 
   /**

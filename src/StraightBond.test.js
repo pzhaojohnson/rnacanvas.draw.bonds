@@ -324,6 +324,41 @@ describe('StraightBond class', () => {
     expect(Number.parseFloat(sb.getAttribute('y2'))).toBeCloseTo(13);
   });
 
+  describe('setBasePadding1 method', () => {
+    let sb = null;
+
+    beforeEach(() => {
+      sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+    });
+
+    it('sets base padding 1', () => {
+      sb.setBasePadding1(57.096);
+      expect(sb.basePadding1).toBeCloseTo(57.096);
+    });
+
+    it('ignores values that are not finite numbers', () => {
+      sb.basePadding1 = 12.08;
+
+      sb.setBasePadding1(NaN);
+      sb.setBasePadding1(Infinity);
+      sb.setBasePadding1('5');
+      sb.setBasePadding1(true);
+      sb.setBasePadding1({});
+      sb.setBasePadding1(null);
+      sb.setBasePadding1(undefined);
+
+      expect(sb.basePadding1).toBeCloseTo(12.08);
+    });
+
+    it('clamps negative values to zero', () => {
+      sb.basePadding1 = 18;
+      expect(sb.basePadding1).toBeCloseTo(18);
+
+      sb.setBasePadding1(-10);
+      expect(sb.basePadding1).toBeCloseTo(0);
+    });
+  });
+
   test('basePadding2 getter and setter', () => {
     let line = createSVGLineElement();
 
