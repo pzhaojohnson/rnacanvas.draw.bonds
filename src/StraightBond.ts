@@ -18,6 +18,16 @@ export type Point = {
   y: number;
 };
 
+const settablePropertyNames = [
+  'basePadding1',
+  'basePadding2',
+] as const;
+
+const setterMethodNames = {
+  'basePadding1': 'setBasePadding1',
+  'basePadding2': 'setBasePadding2',
+} as const;
+
 /**
  * A bond that is a straight line between two bases.
  */
@@ -260,6 +270,25 @@ export class StraightBond<B extends Nucleobase> {
 
     // make at least zero
     this.basePadding2 = Math.max(0, basePadding2);
+  }
+
+  /**
+   * Sets values of the straight bond.
+   *
+   * Is supposed to receive as input an object of property values (keyed by property name).
+   *
+   * The input object can also contain an attributes child object (with key `attributes`).
+   */
+  set(values: unknown) {
+    try {
+      this.setAttributes((values as any).attributes);
+    } catch {}
+
+    settablePropertyNames.forEach(name => {
+      try {
+        this[setterMethodNames[name]]((values as any)[name]);
+      } catch {}
+    });
   }
 
   /**

@@ -446,6 +446,20 @@ describe('StraightBond class', () => {
     });
   });
 
+  test('set method', () => {
+    let sb = StraightBond.between(new NucleobaseMock(), new NucleobaseMock());
+
+    // sets attributes
+    sb.set({ attributes: { 'stroke': '#ab598d', 'stroke-width': '8.15' } });
+    expect(sb.domNode.getAttribute('stroke')).toBe('#ab598d');
+    expect(sb.domNode.getAttribute('stroke-width')).toBe('8.15');
+
+    // sets properties
+    sb.set({ basePadding1: 8.719, basePadding2: 15.42 });
+    expect(sb.basePadding1).toBeCloseTo(8.719);
+    expect(sb.basePadding2).toBeCloseTo(15.42);
+  });
+
   test('reposition method', () => {
     let line = createSVGLineElement();
 
