@@ -231,6 +231,20 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Values that are not finite numbers are ignored.
+   *
+   * Negative values are clamped to zero.
+   */
+  setBasePadding2(basePadding2: number | unknown): void {
+    if (!isFiniteNumber(basePadding2)) {
+      return;
+    }
+
+    // make at least zero
+    this.basePadding2 = Math.max(0, basePadding2);
+  }
+
+  /**
    * Repositions the straight bond based on the current positions of bases 1 and 2.
    */
   reposition(): void {
