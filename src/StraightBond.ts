@@ -35,7 +35,7 @@ export class StraightBond<B extends Nucleobase> {
   /**
    * Default values for newly created straight bonds.
    */
-  static defaults = {
+  static defaultValues = {
     attributes: {
       'stroke': '#000000',
       'stroke-width': '2',
@@ -47,7 +47,7 @@ export class StraightBond<B extends Nucleobase> {
   /**
    * Creates a new straight bond connecting bases 1 and 2.
    *
-   * Applies the default values contained in the `defaults` static property object
+   * Applies the default values contained in the `defaultValues` static property object
    * to the newly created straight bond.
    */
   static between<B extends Nucleobase>(base1: B, base2: B): StraightBond<B> {
@@ -56,7 +56,7 @@ export class StraightBond<B extends Nucleobase> {
 
     sb.assignUUID();
 
-    sb.set(StraightBond.defaults);
+    sb.set(StraightBond.defaultValues);
 
     // to make sure that the newly created straight bond is positioned properly
     sb.reposition();
