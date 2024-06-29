@@ -6,6 +6,8 @@ import { StraightBond } from './StraightBond';
 
 import * as SVG from '@svgdotjs/svg.js';
 
+import { distance } from '@rnacanvas/points';
+
 const SVGLineElement = (new SVG.Line()).node.constructor;
 
 ['x1', 'y1', 'x2', 'y2'].forEach(coordinateName => {
@@ -444,6 +446,25 @@ describe('StraightBond class', () => {
       sb.setBasePadding2(-12);
       expect(sb.basePadding2).toBeCloseTo(0);
     });
+  });
+
+  test('isInverted method', () => {
+    let base1 = new NucleobaseMock();
+    let base2 = new NucleobaseMock();
+
+    base1.centerPoint = { x: 60, y: 10 };
+    base2.centerPoint = { x: 68, y: -5 };
+    expect(distance(base1.centerPoint, base2.centerPoint)).toBeCloseTo(17);
+
+    let sb = StraightBond.between(base1, base2);
+
+    sb.basePadding1 = 4;
+    sb.basePadding2 = 6;
+    expect(sb.isInverted()).toBe(false);
+
+    sb.basePadding1 = 15;
+    sb.basePadding2 = 6;
+    expect(sb.isInverted()).toBe(true);
   });
 
   test('set method', () => {

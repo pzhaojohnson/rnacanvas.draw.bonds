@@ -291,6 +291,16 @@ export class StraightBond<B extends Nucleobase> {
   }
 
   /**
+   * Returns true if the sum of base paddings 1 and 2 is greater than
+   * the distance between the center points of bases 1 and 2 for the straight bond.
+   *
+   * Returns false otherwise.
+   */
+  isInverted(): boolean {
+    return this.basePadding1 + this.basePadding2 > distance(this.base1.centerPoint, this.base2.centerPoint);
+  }
+
+  /**
    * Sets values of the straight bond.
    *
    * Is supposed to receive as input an object of property values (keyed by property name).
