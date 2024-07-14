@@ -322,7 +322,7 @@ export class StraightBond<B extends Nucleobase> {
   /**
    * Repositions the straight bond based on the current positions of bases 1 and 2.
    */
-  reposition(): void {
+  private reposition(): void {
     let centerPoint1 = this.base1.centerPoint;
     let centerPoint2 = this.base2.centerPoint;
 
@@ -332,27 +332,5 @@ export class StraightBond<B extends Nucleobase> {
     this.setAttribute('y1', `${centerPoint1.y + (this.basePadding1 * Math.sin(a))}`);
     this.setAttribute('x2', `${centerPoint2.x - (this.basePadding2 * Math.cos(a))}`);
     this.setAttribute('y2', `${centerPoint2.y - (this.basePadding2 * Math.sin(a))}`);
-  }
-
-  /**
-   * Signals to the straight bond that bases have moved,
-   * causing necessary follow-up actions to be performed
-   * (e.g., repositioning the straight bond).
-   */
-  basesMoved(): void {
-    this.reposition();
-  }
-
-  /**
-   * Signals to the straight bond that bases have been removed,
-   * causing necessary follow-up actions to be performed.
-   *
-   * If either base 1 or 2 of the straight bond lacks a parent container node (i.e., was removed),
-   * then the straight bond will remove itself from any parent container node that it is in.
-   */
-  basesRemoved(): void {
-    if (!this.base1.hasParent() || !this.base2.hasParent()) {
-      this.remove();
-    }
   }
 }
