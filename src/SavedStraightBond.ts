@@ -6,18 +6,15 @@ type NonNullObject = { [name: string]: unknown };
 
 interface Drawing<B extends Nucleobase> {
   /**
-   * Returns the SVG line element in the drawing with the specified ID.
-   *
-   * Throws if there is no SVG line element in the drawing with the specified ID.
+   * The actual DOM node corresponding to the drawing and that is the drawing
+   * (in this case an SVG document).
    */
-  getSVGLineElementWithID(id: string): SVGLineElement | never;
+  readonly domNode: SVGSVGElement;
 
   /**
-   * Returns the nucleobase in the drawing with the specified ID.
-   *
-   * Throws if there is no nucleobase in the drawing with the specified ID.
+   * All nucleobases in the drawing.
    */
-  getBaseWithID(id: string): B | never;
+  readonly bases: Iterable<B>;
 }
 
 /**
@@ -30,8 +27,6 @@ export class SavedStraightBond<B extends Nucleobase> {
   #parentDrawing: Drawing<B>;
 
   /**
-   * The saved form of a straight bond is supposed to be a non-null object.
-   *
    * @param jsonSerializable The saved form of the straight bond (e.g., parsed from a file).
    * @param parentDrawing
    */
@@ -41,65 +36,94 @@ export class SavedStraightBond<B extends Nucleobase> {
     this.#parentDrawing = parentDrawing;
   }
 
-  #getProperty(name: string): unknown {
-    return (this.#jsonSerializable as any)[name];
-  }
-
-  #getIDProperty(name: string): string | never {
-    let id: unknown = this.#getProperty(name);
+  #getID(name: string): string | never {
+    let id: unknown = (this.#jsonSerializable as any)[name];
 
     if (!id) {
-      throw new Error(`ID with name "${name}" is falsy.`);
+      throw new Error(`No ID with name "${name}" was saved.`);
     } else if (typeof id != 'string') {
-      throw new Error(`ID with name "${name}" is not a string: ${id}.`);
+      throw new Error(`The ID with name "${name}" is not a string: ${id}.`);
     }
 
     return id;
   }
 
   get #id(): string | never {
-    // used to be saved under the property name `lineId`
+    // used to be saved under `lineId`
     try {
-      return this.#getIDProperty('id');
+      return this.#getID('id');
     } catch {
-      return this.#getIDProperty('lineId');
+      return this.#getID('lineId');
     }
   }
 
+  get #domNode(): SVGLineElement | never {
+    let id = this.#id;
+    let domNode = this.#parentDrawing.domNode.querySelector(`#${id}`);
+
+    if (!domNode) {
+      throw new Error(`No DOM node in the drawing has the ID "${id}".`);
+    } else if (!(domNode instanceof SVGLineElement)) {
+      throw new Error(`The DOM node with ID "${id}" is not an SVG line element.`);
+    }
+
+    return domNode;
+  }
+
   get #baseID1(): string | never {
-    // used to be saved under the property name `baseId1`
+    // used to be saved under `baseId1`
     try {
-      return this.#getIDProperty('baseID1');
+      return this.#getID('baseID1');
     } catch {
-      return this.#getIDProperty('baseId1');
+      return this.#getID('baseId1');
     }
   }
 
   get #baseID2(): string | never {
-    // used to be saved under the property name `baseId2`
+    // used to be saved under `baseId2`
     try {
-      return this.#getIDProperty('baseID2');
+      return this.#getID('baseID2');
     } catch {
-      return this.#getIDProperty('baseId2');
+      return this.#getID('baseId2');
     }
   }
 
-  #getBasePaddingProperty(name: string): number | never {
-    let basePadding: unknown = this.#getProperty(name);
+  #getBase(num: 1 | 2): B | never {
+    let baseID = { '1': this.#baseID1, '2': this.#baseID2 }[num];
+
+    let b = [...this.#parentDrawing.bases].find(b => b.id === baseID);
+
+    if (!b) {
+      throw new Error(`No base in the drawing has the ID "${baseID}".`);
+    }
+
+    return b;
+  }
+
+  get #base1(): B | never {
+    return this.#getBase(1);
+  }
+
+  get #base2(): B | never {
+    return this.#getBase(2);
+  }
+
+  #getBasePadding(num: 1 | 2): number | never {
+    let basePadding: unknown = (this.#jsonSerializable as any)[`basePadding${num}`];
 
     if (typeof basePadding != 'number') {
-      throw new Error(`Base padding property with name "${name}" is not a number: ${basePadding}.`);
+      throw new Error(`Saved base padding ${num} is not a number: ${basePadding}.`);
     }
 
     return basePadding;
   }
 
   get #basePadding1(): number | never {
-    return this.#getBasePaddingProperty('basePadding1');
+    return this.#getBasePadding(1);
   }
 
   get #basePadding2(): number | never {
-    return this.#getBasePaddingProperty('basePadding2');
+    return this.#getBasePadding(2);
   }
 
   /**
@@ -108,17 +132,10 @@ export class SavedStraightBond<B extends Nucleobase> {
    * Throws if unable to do so.
    */
   recreate(): StraightBond<B> | never {
-    let line = this.#parentDrawing.getSVGLineElementWithID(this.#id);
+    let straightBond = new StraightBond(this.#domNode, this.#base1, this.#base2);
 
-    let base1 = this.#parentDrawing.getBaseWithID(this.#baseID1);
-    let base2 = this.#parentDrawing.getBaseWithID(this.#baseID2);
-
-    let straightBond = new StraightBond(line, base1, base2);
-
-    try {
-      straightBond.basePadding1 = this.#basePadding1;
-      straightBond.basePadding2 = this.#basePadding2;
-    } catch {}
+    try { straightBond.basePadding1 = this.#basePadding1; } catch {}
+    try { straightBond.basePadding2 = this.#basePadding2; } catch {}
 
     return straightBond;
   }

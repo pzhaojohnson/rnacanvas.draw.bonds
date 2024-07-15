@@ -26,202 +26,168 @@ class NucleobaseMock {
 }
 
 class DrawingMock {
-  constructor() {
-    this.domNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  domNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'circle'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'));
-    this.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
-
-    this.bases = [
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-      new NucleobaseMock(),
-    ];
-  }
-
-  getSVGLineElementWithID(id) {
-    let line = [...this.domNode.children].find(ele => ele.id === id && ele.tagName == 'line');
-
-    if (!line) {
-      throw new Error(`This drawing does not contain an SVG line element with the ID: "${id}".`);
-    }
-
-    return line;
-  }
-
-  getBaseWithID(id) {
-    let b = this.bases.find(b => b.id === id);
-
-    if (!b) {
-      throw new Error(`This drawing does not contain a nucleobase with the ID: "${id}".`);
-    }
-
-    return b;
-  }
+  bases = [];
 }
+
+let jsonSerializable = null;
+
+let parentDrawing = null;
+
+let id = null;
+
+let domNode = null;
+
+beforeEach(() => {
+  window.SVGLineElement = SVGElement;
+
+  parentDrawing = new DrawingMock();
+
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'circle'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'text'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'));
+  parentDrawing.domNode.append(document.createElementNS('http://www.w3.org/2000/svg', 'line'));
+
+  for (let i = 0; i < 10; i++) {
+    parentDrawing.bases.push(new NucleobaseMock());
+  }
+
+  id = 'id-18949182u9812u4918u42';
+
+  domNode = SVGLineElementMock.create();
+  domNode.id = id;
+
+  parentDrawing.domNode.insertBefore(domNode, parentDrawing.domNode.childNodes[5]);
+
+  jsonSerializable = {
+    id,
+    baseID1: parentDrawing.bases[0].id,
+    baseID2: parentDrawing.bases[1].id,
+  };
+});
+
+afterEach(() => {
+  jsonSerializable = null;
+
+  parentDrawing = null;
+
+  id = null;
+
+  domNode = null;
+});
 
 describe('SavedStraightBond class', () => {
   describe('recreate method', () => {
-    it('retrieves the correct SVG line element', () => {
-      let id = 'id-duf98u298fu2938fu';
+    it('retrieves the DOM node of the straight bond', () => {
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
-
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[4]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { id, baseID1: parentDrawing.bases[0].id, baseID2: parentDrawing.bases[1].id },
-        parentDrawing,
-      );
-
-      expect(savedStraightBond.recreate().id).toBe(id);
+      expect(savedStraightBond.recreate().domNode).toBe(domNode);
+      expect(domNode).toBeTruthy();
     });
 
     it('checks if the straight bond ID was saved under `lineId`', () => {
-      let id = 'id-duf98u298fu2938fu';
+      expect(id).toBeTruthy();
+      jsonSerializable.lineId = id;
+      jsonSerializable.id = undefined;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[4]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { lineId: id, baseID1: parentDrawing.bases[0].id, baseID2: parentDrawing.bases[1].id },
-        parentDrawing,
-      );
-
-      expect(savedStraightBond.recreate().id).toBe(id);
+      expect(savedStraightBond.recreate().domNode).toBe(domNode);
+      expect(domNode).toBeTruthy();
     });
 
     it('throws if the straight bond ID was not saved', () => {
-      let id = 'id-duf98u298fu2938fu';
+      jsonSerializable.id = undefined;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
-
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[4]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { baseID1: parentDrawing.bases[0].id, baseID2: parentDrawing.bases[1].id },
-        parentDrawing,
-      );
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
       expect(() => savedStraightBond.recreate()).toThrow();
+    });
+
+    it('throws if no DOM node in the drawing has the straight bond ID', () => {
+      domNode.remove();
+
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
+      expect(() => savedStraightBond.recreate()).toThrow();
+
+      parentDrawing.domNode.insertBefore(domNode, parentDrawing.domNode.childNodes[2]);
+
+      expect(() => savedStraightBond.recreate()).not.toThrow();
     });
 
     it('retrieves bases 1 and 2', () => {
-      let id = 'id-duf98u298fu2938fu';
+      jsonSerializable.baseID1 = parentDrawing.bases[5].id;
+      jsonSerializable.baseID2 = parentDrawing.bases[2].id;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[3]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { id, baseID1: parentDrawing.bases[5].id, baseID2: parentDrawing.bases[2].id },
-        parentDrawing,
-      );
-
-      expect(savedStraightBond.recreate().base1.id).toBe(parentDrawing.bases[5].id);
-      expect(savedStraightBond.recreate().base2.id).toBe(parentDrawing.bases[2].id);
+      expect(savedStraightBond.recreate().base1).toBe(parentDrawing.bases[5]);
+      expect(savedStraightBond.recreate().base2).toBe(parentDrawing.bases[2]);
     });
 
     it('checks if base IDs 1 and 2 were saved as `baseId1` or `baseId2`', () => {
-      let id = 'id-duf98u298fu2938fu';
+      jsonSerializable.baseId1 = parentDrawing.bases[5].id;
+      jsonSerializable.baseId2 = parentDrawing.bases[2].id;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
+      jsonSerializable.baseID1 = undefined;
+      jsonSerializable.baseID2 = undefined;
 
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[4]);
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
-      let savedStraightBond = new SavedStraightBond(
-        { id, baseId1: parentDrawing.bases[5].id, baseId2: parentDrawing.bases[2].id },
-        parentDrawing,
-      );
+      expect(savedStraightBond.recreate().base1).toBe(parentDrawing.bases[5]);
+      expect(savedStraightBond.recreate().base2).toBe(parentDrawing.bases[2]);
+    });
 
-      expect(savedStraightBond.recreate().base1.id).toBe(parentDrawing.bases[5].id);
-      expect(savedStraightBond.recreate().base2.id).toBe(parentDrawing.bases[2].id);
+    it('throws if base IDs 1 or 2 do not belong to any bases', () => {
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
+
+      jsonSerializable.baseID1 = 'id-918u49812rj83ur';
+      jsonSerializable.baseID2 = parentDrawing.bases[2].id;
+      expect(() => savedStraightBond.recreate()).toThrow();
+
+      jsonSerializable.baseID1 = parentDrawing.bases[3].id;
+      jsonSerializable.baseID2 = 'id-2981u4928u9812u';
+      expect(() => savedStraightBond.recreate()).toThrow();
     });
 
     it('throws if either base ID 1 or 2 was not saved', () => {
-      let id = 'id-duf98u298fu2938fu';
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
-
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[4]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { id, baseID2: parentDrawing.bases[2].id },
-        parentDrawing,
-      );
-
+      jsonSerializable.baseID1 = undefined;
+      jsonSerializable.baseID2 = parentDrawing.bases[3].id;
       expect(() => savedStraightBond.recreate()).toThrow();
 
-      savedStraightBond = new SavedStraightBond(
-        { id, baseID1: parentDrawing.bases[2].id },
-        parentDrawing,
-      );
-
+      jsonSerializable.baseID1 = parentDrawing.bases[2].id;
+      jsonSerializable.baseID2 = undefined;
       expect(() => savedStraightBond.recreate()).toThrow();
+
+      jsonSerializable.baseID1 = parentDrawing.bases[2].id;
+      jsonSerializable.baseID2 = parentDrawing.bases[3].id;
+      expect(() => savedStraightBond.recreate()).not.toThrow();
     });
 
     it('restores base paddings 1 and 2', () => {
-      let id = 'id-duf98u298fu2938fu';
+      jsonSerializable.basePadding1 = 23.149119;
+      jsonSerializable.basePadding2 = 32.3891;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
-
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[3]);
-
-      let savedStraightBond = new SavedStraightBond(
-        {
-          id, baseID1: parentDrawing.bases[0].id, baseID2: parentDrawing.bases[1].id,
-          basePadding1: 23.149119, basePadding2: 32.3891,
-        },
-        parentDrawing,
-      );
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
       expect(savedStraightBond.recreate().basePadding1).toBeCloseTo(23.149119);
       expect(savedStraightBond.recreate().basePadding2).toBeCloseTo(32.3891);
     });
 
     it('does not modify base paddings if no base paddings were saved', () => {
-      let id = 'id-duf98u298fu2938fu';
+      jsonSerializable.basePadding1 = undefined;
+      jsonSerializable.basePadding2 = undefined;
 
-      let line = SVGLineElementMock.create();
-      line.id = id;
-
-      let parentDrawing = new DrawingMock();
-      parentDrawing.domNode.insertBefore(line, parentDrawing.domNode.childNodes[3]);
-
-      let savedStraightBond = new SavedStraightBond(
-        { id, baseID1: parentDrawing.bases[0].id, baseID2: parentDrawing.bases[1].id },
-        parentDrawing,
-      );
+      let savedStraightBond = new SavedStraightBond(jsonSerializable, parentDrawing);
 
       expect(savedStraightBond.recreate().basePadding1).toBe(0);
       expect(savedStraightBond.recreate().basePadding2).toBe(0);
